@@ -63,9 +63,17 @@ const createInvoice = async (prevState: State, formData: FormData) => {
 
 const UpdateInvoice = FormSchema.omit({ id: true, date: true });
 
-const updateInvoice = async (id: string, formData: FormData) => {
-	const rawFormData = Object.fromEntries(formData.entries());
-	const { customerId, amount, status } = UpdateInvoice.parse(rawFormData);
+const updateInvoice = async (id: string, prevState: State, formData: FormData) => {
+	const validatedFields = UpdateInvoice.safeParse(Object.fromEntries(formData.entries()));
+
+	if (!validatedFields.success) {
+		return {
+			errors: validatedFields.error.flatten().fieldErrors,
+			message: "Missing Fields. Failed to Update Invoice.",
+		};
+	}
+
+	const { customerId, amount, status } = validatedFields.data;
 	const amountInCents = amount * 100;
 
 	try {
@@ -75,8 +83,9 @@ const updateInvoice = async (id: string, formData: FormData) => {
 		WHERE id = ${id}
 		`;
 	} catch (error) {
-		console.log("Error updating invoice: ", error);
-		throw new Error("Failed to update invoice.");
+		return {
+			message: "Database Error. Failed to Update Invoice.",
+		};
 	}
 
 	revalidatePath("/dashboard/invoices");
