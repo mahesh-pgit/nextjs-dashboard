@@ -48,8 +48,8 @@ const createInvoice = async (prevState: State, formData: FormData) => {
 	// Insert data into the database
 	try {
 		await sql`
-		INSERT INTO invoices (customer_id, amount, status, date)
-		VALUES (${customerId}, ${amountInCents}, ${status}, ${date})
+			INSERT INTO invoices (customer_id, amount, status, date)
+			VALUES (${customerId}, ${amountInCents}, ${status}, ${date})
 		`;
 	} catch (error) {
 		// If a database error occurs, return a more specific error.
@@ -80,9 +80,9 @@ const updateInvoice = async (id: string, prevState: State, formData: FormData) =
 
 	try {
 		await sql`
-		UPDATE invoices
-		SET customer_id = ${customerId}, amount = ${amountInCents}, status = ${status}
-		WHERE id = ${id}
+			UPDATE invoices
+			SET customer_id = ${customerId}, amount = ${amountInCents}, status = ${status}
+			WHERE id = ${id}
 		`;
 	} catch (error) {
 		return {
