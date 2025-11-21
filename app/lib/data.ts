@@ -136,7 +136,8 @@ export async function fetchInvoiceById(id: string) {
 		return invoice[0];
 	} catch (error) {
 		console.error("Database Error:", error);
-		throw new Error("Failed to fetch invoice.");
+		// Return null if error (PostgresError: invalid input syntax for type uuid) occurs so that not-found.tsx kicks in instead of error.tsx
+		return null;
 	}
 }
 
