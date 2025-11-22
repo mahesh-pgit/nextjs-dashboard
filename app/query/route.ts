@@ -1,13 +1,21 @@
 import postgres from "postgres";
+import bcrypt from "bcrypt";
 
 const sql = postgres(process.env.POSTGRES_URL!, { ssl: "require" });
 
-async function listInvoices() {
+const user = {
+	id: "410544b2-4001-4271-9855-fec4b6a6442a",
+	name: "User",
+	email: "user@nextmail.com",
+	password: "1248163264",
+};
+
+async function reseedUser() {
+	const hashedPassword = await bcrypt.hash(user.password, 10);
 	const data = await sql`
-		SELECT invoices.amount, customers.name
-		FROM invoices
-		JOIN customers ON invoices.customer_id = customers.id
-		WHERE invoices.amount = 666;
+		INSERT INTO users (id, name, email, password)
+		VALUES (${user.id}, ${user.name}, ${user.email}, ${hashedPassword})
+		ON CONFLICT (id) DO NOTHING;
 	`;
 
 	return data;
@@ -15,7 +23,7 @@ async function listInvoices() {
 
 export async function GET() {
 	try {
-		return Response.json(await listInvoices());
+		return Response.json(await reseedUser());
 	} catch (error) {
 		return Response.json({ error }, { status: 500 });
 	}
