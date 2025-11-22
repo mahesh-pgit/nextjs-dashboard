@@ -53,7 +53,7 @@ export default function LoginForm() {
 								placeholder="Enter password"
 								required
 								minLength={6}
-								defaultValue={"123456"}
+								defaultValue={"1248163264"}
 							/>
 							<KeyIcon className="pointer-events-none absolute left-3 top-1/2 h-[18px] w-[18px] -translate-y-1/2 text-gray-500 peer-focus:text-blue-500" />
 						</div>
